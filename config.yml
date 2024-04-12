@@ -1,0 +1,39 @@
+---
+- name: Configure router
+  hosts: gns3_router
+  connection: network_cli
+  gather_facts: no
+  tasks:
+    
+    - name: Setting Hostname for Router
+      ios_config:
+        lines:
+          - hostname Router1_Caberte
+      register: hostname_result
+    
+    - name: Configure login Banner for Routerr
+      ios_config:
+        lines:
+          - banner motd
+            $Authorized user only, unauthorized user strictly prohibited!!$
+      register: banner_result
+
+
+    - name: Creating password for line console
+      ios_config:
+        commands:
+          - line console 0
+          - password cisco
+          - login
+      register: console_password_result
+
+    - name: Creating password for entering priviledge user
+      ios_config:
+        commands:
+          - enable secret class
+  
+    - name: Enabling service password-encryption
+      ios_config:
+        lines:
+          - service password-encryption
+      register: service_password_encryption
